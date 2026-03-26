@@ -128,7 +128,7 @@ export default function Instrument({ id, children, initialPosition = [0, 0, 0] }
     if (intersection) {
       const x = Math.max(-TABLE_BOUNDS.x, Math.min(TABLE_BOUNDS.x, intersection.x));
       const z = Math.max(-TABLE_BOUNDS.z, Math.min(TABLE_BOUNDS.z, intersection.z));
-      setPosition(new THREE.Vector3(x, TABLE_Y, z));
+      setPosition(new THREE.Vector3(x, 0.44, z));
     }
   });
 
@@ -146,7 +146,7 @@ export default function Instrument({ id, children, initialPosition = [0, 0, 0] }
     >
       {/* Invisible Hit Area for easier interaction with small tools like forceps/needles */}
       <mesh visible={false}>
-        <boxGeometry args={[0.15, 0.25, 0.15]} />
+        <boxGeometry args={[0.3, 0.4, 0.3]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>
 

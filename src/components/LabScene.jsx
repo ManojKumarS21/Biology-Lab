@@ -26,6 +26,9 @@ const INSTRUMENT_COMPONENTS = {
   forceps: { Component: () => <SmallTools type="forceps" />, position: [-0.4, 0.44, 0.5] },
   scalpel: { Component: () => <SmallTools type="blade" />, position: [-0.2, 0.44, 0.5] },
   dropper: { Component: () => <SmallTools type="dropper" />, position: [0.2, 0.44, 0.5] },
+  test_tube: { Component: (props) => <GlassEquipment type="testTube" {...props} />, position: [0.6, 0.44, 0.4] },
+  filter_paper: { Component: (props) => <GlassEquipment type="filterPaper" {...props} />, position: [-1.0, 0.44, -0.4] },
+  coverslip: { Component: (props) => <GlassEquipment type="coverslip" {...props} />, position: [0.6, 0.44, -0.4] },
 };
 
 export default function LabScene() {
@@ -75,6 +78,7 @@ export default function LabScene() {
             shadow-mapSize={[1024, 1024]} 
           />
           <directionalLight position={[-5, 5, -5]} intensity={0.5} />
+          <pointLight position={[0, 1.5, 2]} intensity={1} color="#ffffff" />
 
           <Table />
           

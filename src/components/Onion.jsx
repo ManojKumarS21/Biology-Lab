@@ -23,7 +23,7 @@ const OnionPeel = ({ rotation, phiStart, phiLength, scale = 1, rootLength = 0 })
   }, [scale]);
 
   return (
-    <group rotation={[0, rotation, 0]} position={[0, 0.1, 0]}>
+    <group rotation={[0, rotation, 0]} position={[0, 0.075, 0]}>
       <mesh castShadow receiveShadow>
         <latheGeometry args={[points, 16, phiStart, phiLength]} />
         <meshStandardMaterial color="#d81b60" roughness={0.3} metalness={0.1} emissive="#880e4f" emissiveIntensity={0.1} />
@@ -42,11 +42,6 @@ const OnionPeel = ({ rotation, phiStart, phiLength, scale = 1, rootLength = 0 })
         <meshBasicMaterial color="#000000" side={THREE.BackSide} />
       </mesh>
 
-      {/* Root Disk - Anatomical point where roots emerge */}
-      <mesh position={[0, -0.15 * 0.5 * scale, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.08 * 0.5 * scale, 16]} />
-        <meshStandardMaterial color="#d7ccc8" roughness={1} />
-      </mesh>
     </group>
   );
 };
@@ -99,7 +94,7 @@ const Onion = ({ position = [-0.35, 0.44, -0.2] }) => {
   const targetRot = useRef(new THREE.Euler(0, 0, 0));
 
   const { raycaster } = useThree();
-  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -0.44); // Aligned with table height
+  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -0.44); // Aligned with scaled table height
   const meshRef = useRef();
 
   // Keyboard Listener for Rotation
@@ -126,7 +121,7 @@ const Onion = ({ position = [-0.35, 0.44, -0.2] }) => {
         // Apply boundaries to onion too
         const x = Math.max(-1.8, Math.min(1.8, intersection.x));
         const z = Math.max(-0.8, Math.min(0.8, intersection.z));
-        targetPos.current.set(x, 0.46, z);
+        targetPos.current.set(x, 0.44, z);
         
         // Manual override rotation (0=V, 1=H, 2=VInv, 3=HInv)
         const rotX = (manualRotation % 2 === 1) ? Math.PI / 2 : 0;
@@ -245,6 +240,7 @@ const Onion = ({ position = [-0.35, 0.44, -0.2] }) => {
       onPointerDown={handlePointerDown}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
+      scale={[1.0, 1.0, 1.0]}
     >
       {/* Labels Removed per user request */}
       <group>
@@ -258,8 +254,8 @@ const Onion = ({ position = [-0.35, 0.44, -0.2] }) => {
           />
         ))}
 
-        {/* Green Stalks - Shorter and curved like photo */}
-        <group position={[0, 0.35, 0]}>
+        {/* Green Stalks - Shifted to match bulb base at 0 */}
+        <group position={[0, 0.325, 0]}>
           {[...Array(6)].map((_, i) => (
             <group key={`stalk-grp-${i}`} rotation={[0, (i * Math.PI * 2) / 6, 0]}>
               <group position={[Math.random() * 0.01, 0, 0]} rotation={[0.4 + Math.random() * 0.3, 0, (Math.random() - 0.5) * 0.2]}>
@@ -276,11 +272,17 @@ const Onion = ({ position = [-0.35, 0.44, -0.2] }) => {
           ))}
         </group>
 
-        {/* Roots - Hyper-dense tangled fibrous mass */}
-        <group position={[0, -0.06, 0]} scale={[1, rootScale, 1]}>
+        {/* Roots - Attached to base at y=0 */}
+        <group position={[0, 0, 0]} scale={[1, rootScale, 1]}>
           {[...Array(140)].map((_, i) => (
             <RootTendril key={`root-${i}`} index={i} />
           ))}
+
+          {/* Root Disk - Anatomical point where roots emerge */}
+          <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <circleGeometry args={[0.07, 16]} />
+            <meshStandardMaterial color="#d7ccc8" roughness={1} />
+          </mesh>
         </group>
       </group>
 

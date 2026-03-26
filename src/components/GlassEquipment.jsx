@@ -9,56 +9,49 @@ export default function GlassEquipment({ type = 'beaker', label }) {
   const isBeaker = type === 'beaker';
   const isWatchGlass = type === 'watchGlass';
   const isSlide = type === 'slide';
+  const isTestTube = type === 'testTube';
+  const isFilterPaper = type === 'filterPaper';
+  const isCoverSlip = type === 'coverslip';
 
   return (
-    <group>
+    <group scale={[1.5, 1.5, 1.5]}>
       {isBeaker && (
-        <group>
-          <mesh castShadow>
-            <cylinderGeometry args={[0.08, 0.08, 0.2, 32, 1, true]} />
-            <meshPhysicalMaterial 
-              transparent 
-              opacity={0.6} 
-              transmission={1} 
-              thickness={0.25} 
-              roughness={0}
-              clearcoat={1}
-              clearcoatRoughness={0}
-              color="#d1f2ff"
-              ior={1.5}
-              envMapIntensity={2}
-            />
-          </mesh>
-          <mesh position={[0, -0.1, 0]}>
-            <circleGeometry args={[0.08, 32]} rotation={[-Math.PI / 2, 0, 0]} />
-            <meshPhysicalMaterial transparent opacity={0.4} transmission={1} thickness={0.2} color="#b2ebf2" />
-          </mesh>
-          
-          {/* Liquid */}
-          <mesh position={[0, -0.05, 0]}>
-            <cylinderGeometry args={[0.076, 0.076, 0.1, 32]} />
-            <meshStandardMaterial 
-              color={
-                label?.includes('HCL') ? '#ef5350' : 
-                label?.includes('Alcohol') ? '#00bcd4' :
-                label?.includes('Stain') ? '#c2185b' :
-                '#03a9f4'
-              } 
-              transparent 
-              opacity={0.7} 
-              roughness={0.1}
-              metalness={0.1}
-            />
-          </mesh>
-
-          {/* Identification Label Removed */}
+        <group position={[0, 0, 0]}> {/* Bottom of beaker at 0 */}
+          <group position={[0, 0, 0]}>
+            <mesh castShadow position={[0, 0.1, 0]}>
+              <cylinderGeometry args={[0.08, 0.08, 0.2, 32, 1, true]} />
+              <meshPhysicalMaterial 
+                transparent 
+                opacity={0.4} 
+                roughness={0.05} 
+                metalness={0.1}
+                color="#888888" 
+                clearcoat={1}
+                clearcoatRoughness={0.1}
+              />
+            </mesh>
+            <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <circleGeometry args={[0.08, 32]} />
+              <meshStandardMaterial transparent opacity={0.2} color="#ffffff" roughness={0} />
+            </mesh>
+            {/* Liquid */}
+            <mesh position={[0, 0.05, 0]}>
+              <cylinderGeometry args={[0.078, 0.078, 0.1, 32]} />
+              <meshStandardMaterial 
+                color={label?.includes('HCL') ? '#ff1744' : label?.includes('Alcohol') ? '#00e5ff' : label?.includes('Stain') ? '#f50057' : '#2979ff'} 
+                emissive={label?.includes('HCL') ? '#ff1744' : label?.includes('Alcohol') ? '#00e5ff' : label?.includes('Stain') ? '#f50057' : '#2979ff'}
+                emissiveIntensity={2.5} transparent opacity={0.95} roughness={0}
+              />
+            </mesh>
+          </group>
         </group>
       )}
+
 
       {isWatchGlass && (
         <group>
           <mesh 
-            castShadow rotation={[-Math.PI / 2, 0, 0]}
+            castShadow position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}
             onClick={(e) => {
               e.stopPropagation();
               if (activeTool === 'forceps' && currentStep === STEPS.PLACE_IN_WATCH_GLASS) {
@@ -69,15 +62,15 @@ export default function GlassEquipment({ type = 'beaker', label }) {
               }
             }}
           >
-            <sphereGeometry args={[0.1, 32, 32, 0, Math.PI * 2, 0.1, 0.3]} />
+            <sphereGeometry args={[0.1, 32, 32, 0, Math.PI * 2, 0.5, 1.2]} />
             <meshPhysicalMaterial 
               transparent 
               opacity={0.4} 
-              transmission={1} 
-              thickness={0.1} 
-              roughness={0.02}
+              roughness={0.05} 
+              metalness={0.1}
+              color="#888888" 
               clearcoat={1}
-              color="#b2ebf2"
+              clearcoatRoughness={0.1}
             />
           </mesh>
           {/* Label Removed */}
@@ -93,7 +86,7 @@ export default function GlassEquipment({ type = 'beaker', label }) {
       {isSlide && (
         <group>
           <mesh 
-            castShadow
+            castShadow position={[0, 0.003, 0]}
             onClick={(e) => {
               e.stopPropagation();
               if (activeTool === 'forceps' && currentStep === STEPS.TRANSFER_TO_SLIDE) {
@@ -110,12 +103,12 @@ export default function GlassEquipment({ type = 'beaker', label }) {
             <boxGeometry args={[0.3, 0.005, 0.1]} />
             <meshPhysicalMaterial 
               transparent 
-              opacity={0.3} 
-              transmission={1} 
-              thickness={0.05} 
-              roughness={0.02}
+              opacity={0.4} 
+              roughness={0.05} 
+              metalness={0.1}
+              color="#888888" 
               clearcoat={1}
-              color="#ffffff"
+              clearcoatRoughness={0.1}
             />
           </mesh>
           {/* Label Removed */}
@@ -134,6 +127,64 @@ export default function GlassEquipment({ type = 'beaker', label }) {
             </group>
           )}
         </group>
+      )}
+      {isTestTube && (
+        <group scale={[0.6, 1.2, 0.6]}> {/* Thinner and taller */}
+          <mesh castShadow position={[0, 0.15, 0]}>
+            <cylinderGeometry args={[0.05, 0.05, 0.3, 32, 1, true]} />
+            <meshPhysicalMaterial 
+              transparent 
+              opacity={0.4} 
+              roughness={0.05} 
+              metalness={0.1}
+              color="#888888" 
+              clearcoat={1}
+              clearcoatRoughness={0.1}
+            />
+          </mesh>
+          {/* Rounded bottom */}
+          <mesh position={[0, 0, 0]}>
+            <sphereGeometry args={[0.05, 32, 32, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2]} />
+            <meshPhysicalMaterial transparent opacity={0.4} roughness={0.05} metalness={0.1} color="#888888" clearcoat={1} />
+          </mesh>
+          {/* Liquid in Test Tube */}
+          <mesh position={[0, 0.1, 0]}>
+            <group>
+              <mesh position={[0, 0, 0]}>
+                <cylinderGeometry args={[0.048, 0.048, 0.15, 32]} />
+                <meshStandardMaterial color="#00e5ff" emissive="#00e5ff" emissiveIntensity={2.5} transparent opacity={0.95} roughness={0} />
+              </mesh>
+              <mesh position={[0, -0.075, 0]}>
+                <sphereGeometry args={[0.048, 32, 32, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2]} />
+                <meshStandardMaterial color="#00e5ff" emissive="#00e5ff" emissiveIntensity={2.5} transparent opacity={0.95} roughness={0} />
+              </mesh>
+            </group>
+          </mesh>
+        </group>
+      )}
+      {isFilterPaper && (
+        <group rotation={[Math.PI / 2, 0, 0]} scale={[2, 2, 2]}>
+          <mesh castShadow>
+            <circleGeometry args={[0.15, 32]} />
+            <meshStandardMaterial color="#ffffff" roughness={1} />
+          </mesh>
+        </group>
+      )}
+
+      {isCoverSlip && (
+        <mesh castShadow position={[0, 0.001, 0]}>
+          <boxGeometry args={[0.08, 0.002, 0.08]} />
+          <meshStandardMaterial 
+            transparent 
+            transparent 
+            opacity={0.4} 
+            roughness={0.05} 
+            metalness={0.1}
+            color="#888888" 
+            clearcoat={1}
+            clearcoatRoughness={0.1}
+          />
+        </mesh>
       )}
     </group>
   );

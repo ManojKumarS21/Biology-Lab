@@ -14,27 +14,27 @@ export default function Burner() {
   };
 
   return (
-    <group onClick={handleHeat}>
+    <group onClick={handleHeat} scale={[1.5, 1.5, 1.5]}>
       {/* Base */}
-      <mesh castShadow>
+      <mesh castShadow position={[0, 0.01, 0]}>
         <cylinderGeometry args={[0.08, 0.1, 0.02]} />
         <meshStandardMaterial color="#333333" metalness={0.8} />
       </mesh>
       
       {/* Tube */}
-      <mesh castShadow position={[0, 0.15, 0]}>
+      <mesh castShadow position={[0, 0.16, 0]}>
         <cylinderGeometry args={[0.015, 0.015, 0.28]} />
         <meshStandardMaterial color="#AAAAAA" metalness={0.9} roughness={0.1} />
       </mesh>
 
       {/* Gas Valve */}
-      <mesh position={[0, 0.05, 0.03]} rotation={[1.57, 0, 0]}>
+      <mesh position={[0, 0.06, 0.03]} rotation={[1.57, 0, 0]}>
         <cylinderGeometry args={[0.01, 0.01, 0.05]} />
         <meshStandardMaterial color="#FFD700" metalness={1} />
       </mesh>
 
       {/* Flame (Simplified) */}
-      <mesh position={[0, 0.3, 0]}>
+      <mesh position={[0, 0.31, 0]}>
         <sphereGeometry args={[0.02, 8, 8, 0, Math.PI * 2, 0, Math.PI * 0.5]} />
         <meshStandardMaterial 
           color="#4169E1" 
