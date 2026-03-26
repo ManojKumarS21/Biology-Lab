@@ -4,24 +4,41 @@ import React, { useMemo } from 'react';
 import * as THREE from 'three';
 
 const ForcepArm = ({ isLeft }) => {
-  const curve = useMemo(() => {
-    const scale = isLeft ? -1 : 1;
-    const points = [
-      new THREE.Vector3(0, 0.1, 0),             // Top hinge
-      new THREE.Vector3(0.015 * scale, 0.06, 0), // Bulge out slightly
-      new THREE.Vector3(0.018 * scale, -0.02, 0), // Middle span
-      new THREE.Vector3(0.008 * scale, -0.07, 0), // Taper inward
-      new THREE.Vector3(0.001 * scale, -0.1, 0)   // Touching tips
-    ];
-    return new THREE.CatmullRomCurve3(points);
-  }, [isLeft]);
+  const shape = useMemo(() => {
+    const s = new THREE.Shape();
+    s.moveTo(0, 0); // Top inner
+    s.lineTo(0.005, 0); // Top outer 
+    s.lineTo(0.012, -0.08); // Grip curve outer
+    s.lineTo(0.002, -0.16); // Tip outer
+    s.lineTo(0, -0.16); // Tip inner
+    s.lineTo(0.008, -0.08); // Grip curve inner
+    s.lineTo(0, 0); // Back to top
+    return s;
+  }, []);
+
+  const scaleX = isLeft ? -1 : 1;
+  const extrudeSettings = useMemo(() => ({
+    depth: 0.008,
+    bevelEnabled: true,
+    bevelSegments: 2,
+    steps: 1,
+    bevelSize: 0.0005,
+    bevelThickness: 0.0005,
+  }), []);
 
   return (
-    <mesh castShadow scale={[1, 1, 0.25]}>
-      {/* 20 tubular segments, radius=0.008, 16 radial segments, closed=false */}
-      <tubeGeometry args={[curve, 32, 0.006, 16, false]} />
-      <meshStandardMaterial color="#f5f5f5" metalness={1.0} roughness={0.15} />
-    </mesh>
+    <group scale={[scaleX, 1, 1]} position={[0, 0.08, -0.004]}>
+      <mesh castShadow>
+        <extrudeGeometry args={[shape, extrudeSettings]} />
+        <meshStandardMaterial color="#c0c4c8" metalness={0.9} roughness={0.3} />
+      </mesh>
+      
+      {/* Grip Serrations - Grooved texture block on outer face */}
+      <mesh position={[0.0105, -0.08, 0.004]} rotation={[0, 0, -0.08]}>
+         <boxGeometry args={[0.001, 0.04, 0.008]} />
+         <meshStandardMaterial color="#a0a4a8" metalness={0.8} roughness={0.6} />
+      </mesh>
+    </group>
   );
 };
 
@@ -31,8 +48,8 @@ export default function SmallTools({ type = 'needle' }) {
   const isBlade = type === 'blade';
   const isDropper = type === 'dropper';
 
-  // Adjust scale dynamically: dropper slightly smaller
-  const baseScale = isDropper ? 1.8 : 2.5;
+  // Adjust scale dynamically: dropper slightly smaller, blade smaller
+  const baseScale = isDropper ? 1.8 : (isBlade ? 1.5 : 2.5);
 
   return (
     <group scale={[baseScale, baseScale, baseScale]} position={[0, 0, 0]}>
